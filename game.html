@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word Scramble Game</title>
+<style>
+  body {
+    margin: 0; padding: 0;
+    font-family: Arial, sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #fff;
+  }
+
+  .main-box {
+    background: rgba(0,0,0,0.6);
+    padding: 30px 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    width: 300px;
+  }
+
+  h1 {
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+    font-size: 1.8em;
+  }
+
+  .scramble-box {
+    font-size: 2em;
+    margin-bottom: 20px;
+    letter-spacing: 5px;
+  }
+
+  input {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+  }
+
+  button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background: #ff6b6b;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    transition:0.3s;
+  }
+
+  button:hover {
+    background: #ff8787;
+  }
+
+  .msg {
+    margin-top: 15px;
+    font-size: 1.2em;
+    min-height: 24px;
+  }
+
+  .scoreboard {
+    margin-top: 20px;
+    font-size: 18px;
+  }
+</style>
+</head>
+<body>
+
+<div class="main-box">
+  <h1>Word Scramble Game</h1>
+  <div class="scramble-box" id="scrambledWord"></div>
+  <input type="text" id="userInput" placeholder="Type your answer here">
+  <button id="submitBtn">Submit</button>
+  <div class="msg" id="msg"></div>
+  <div class="scoreboard">
+    Score: <span id="score">0</span>
+  </div>
+</div>
+
+<script>
+const words = ["cat","dog","sun","tree","book","fish","star","moon","pen","cup"];
+let remainingWords = [...words]; // clone original
+let currentWord = "";
+let score = 0;
+
+function shuffleWord(word) {
+  const arr = word.split("");
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr.join("");
+}
+
+function nextWord() {
+  if (remainingWords.length === 0) {
+    document.getElementById("scrambledWord").textContent = "🎉 You finished all words!";
+    document.getElementById("userInput").disabled = true;
+    document.getElementById("submitBtn").disabled = true;
+    return;
+  }
+  const index = Math.floor(Math.random() * remainingWords.length);
+  currentWord = remainingWords[index];
+  remainingWords.splice(index, 1); // remove used word
+  document.getElementById("scrambledWord").textContent = shuffleWord(currentWord);
+  document.getElementById("userInput").value = "";
+  document.getElementById("msg").textContent = "";
+}
+
+document.getElementById("submitBtn").addEventListener("click", ()=>{
+  const userAns = document.getElementById("userInput").value.trim().toLowerCase();
+  if(userAns === currentWord){
+    score++;
+    document.getElementById("score").textContent = score;
+    document.getElementById("msg").textContent = "Correct!";
+  } else {
+    document.getElementById("msg").textContent = `Wrong! The word was "${currentWord}"`;
+  }
+  nextWord();
+});
+
+// start first word
+nextWord();
+</script>
+
+</body>
+</html>
